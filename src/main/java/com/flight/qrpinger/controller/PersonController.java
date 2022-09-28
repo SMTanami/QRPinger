@@ -6,6 +6,7 @@ import com.flight.qrpinger.exceptions.UserNotFoundException;
 import com.flight.qrpinger.repository.PersonRepository;
 import com.flight.qrpinger.service.email.EmailService;
 import com.flight.qrpinger.service.qrgen.QRService;
+import com.flight.qrpinger.service.sms.TextService;
 import com.google.zxing.WriterException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +20,13 @@ public class PersonController {
 
     private final QRService qrService;
     private final EmailService emailService;
+    private final TextService textService;
     private final PersonRepository personRepository;
 
 
-    public PersonController(QRService qrService, EmailService emailService, PersonRepository personRepository) {
+    public PersonController(QRService qrService, EmailService emailService, PersonRepository personRepository,
+                            TextService textService) {
+        this.textService = textService;
         this.qrService = qrService;
         this.emailService = emailService;
         this.personRepository = personRepository;
@@ -48,6 +52,9 @@ public class PersonController {
 
     @GetMapping("/{id}")
     ResponseEntity getOneUser(@PathVariable Long id) {
+        if(personRepository.existsById(id)) {
+            textService.sendText(personRepository.findById(id).get().getPhoneNumber());
+        }
         return ResponseEntity.ok(personRepository.findById(id).orElseThrow(() -> new UserNotFoundException()));
     }
 
