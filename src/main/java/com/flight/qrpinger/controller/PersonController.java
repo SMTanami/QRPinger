@@ -1,18 +1,30 @@
 package com.flight.qrpinger.controller;
 
 import com.flight.qrpinger.domain.Person;
+import com.flight.qrpinger.domain.QRCode;
 import com.flight.qrpinger.exceptions.UserNotFoundException;
 import com.flight.qrpinger.repository.PersonRepository;
+import com.flight.qrpinger.service.email.EmailService;
+import com.flight.qrpinger.service.qrgen.QRService;
+import com.google.zxing.WriterException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
 public class PersonController {
 
+    private final QRService qrService;
+    private final EmailService emailService;
     private final PersonRepository personRepository;
 
-    public PersonController(PersonRepository personRepository) {
+
+    public PersonController(QRService qrService, EmailService emailService, PersonRepository personRepository) {
+        this.qrService = qrService;
+        this.emailService = emailService;
         this.personRepository = personRepository;
     }
 
@@ -23,7 +35,15 @@ public class PersonController {
 
     @PostMapping("/signup")
     public ResponseEntity newUser(@RequestBody Person newPerson) {
-        return ResponseEntity.ok(personRepository.save(newPerson));
+        ResponseEntity response = ResponseEntity.ok(personRepository.save(newPerson));
+        try {
+            QRCode qrCode = qrService.generate(newPerson.getId(), newPerson.getLastName());
+            emailService.send(newPerson.getEmail(), "QRPinger - Your QR Code", "Enjoy!", qrCode);
+        } catch (IOException | WriterException e) {
+            //Log here?
+            e.printStackTrace();
+        }
+        return response;
     }
 
     @GetMapping("/{id}")
