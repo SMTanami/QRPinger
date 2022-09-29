@@ -25,6 +25,6 @@ public class QRServiceImpl implements QRService{
         String path = this.path + userLastName + "-" + id;
         BitMatrix matrix = writer.encode(data + id.toString(), BarcodeFormat.QR_CODE, 500, 500);
         MatrixToImageWriter.writeToPath(matrix, "jpg", Paths.get(path));
-        return new QRCode("Your Code.jpg", MatrixToImageWriter.toBufferedImage(matrix), path);
+        return new QRCode("Your Code.jpg", matrix, path);
     }
 }
