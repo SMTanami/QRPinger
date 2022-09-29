@@ -11,7 +11,6 @@ import com.google.zxing.WriterException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @RestController
@@ -42,9 +41,8 @@ public class PersonController {
         ResponseEntity response = ResponseEntity.ok(personRepository.save(newPerson));
         try {
             QRCode qrCode = qrService.generate(newPerson.getId(), newPerson.getLastName());
-            emailService.send(newPerson.getEmail(), "QRPinger - Your QR Code", "Enjoy!", qrCode);
+            emailService.sendEmail(newPerson.getEmail(), "QRPinger - Your QR Code", "Enjoy!", qrCode);
         } catch (IOException | WriterException e) {
-            //Log here?
             e.printStackTrace();
         }
         return response;

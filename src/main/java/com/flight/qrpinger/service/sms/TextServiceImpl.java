@@ -8,19 +8,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class TextServiceImpl implements TextService {
 
-    private final String from = "+12053902659";
+    private static final String FROM = System.getenv("FROM_NUM");
 
     public TextServiceImpl() {
         Twilio.init(System.getenv("TWILIO_SID"), System.getenv("TWILIO_TOKEN"));
     }
-
     @Override
     public void sendText(String to) {
         Message message = Message.creator(
                         new PhoneNumber(to),
-                        new PhoneNumber(from),
+                        new PhoneNumber(FROM),
                         "You've been pinged!")
                 .create();
     }
-
 }

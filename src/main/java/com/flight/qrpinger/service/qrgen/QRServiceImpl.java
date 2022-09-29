@@ -9,7 +9,6 @@ import com.google.zxing.common.BitMatrix;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Paths;
 
