@@ -7,6 +7,6 @@ import java.io.IOException;
 
 public interface QRService {
 
-    QRCode generate(Long id, String userLastName) throws WriterException, IOException;
+    QRCode generate(Long id) throws WriterException;
 
 }

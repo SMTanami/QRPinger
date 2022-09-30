@@ -6,22 +6,32 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.image.BufferedImage;
-import java.util.Objects;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class QRCode {
 
-    private String fileName;
-    private BitMatrix matrix;
-    private String filepath;
-    private String data;
+    private final BitMatrix matrix;
+    private final Long userId;
+    private final Path path;
 
+    public QRCode(BitMatrix matrix, Long userId) {
+        this.matrix = matrix;
+        this.userId = userId;
+        this.path = Path.of(System.getenv("QR_PATH") + "\\" + userId);
+    }
 
-    public BufferedImage toImage() {
-        return MatrixToImageWriter.toBufferedImage(matrix);
+    public File toFile() throws IOException {
+        MatrixToImageWriter.writeToPath(matrix, "png", path);
+        return path.toFile();
+    }
+
+    public boolean deleteFile() throws IOException {
+        return Files.deleteIfExists(path);
     }
 
 }

@@ -9,8 +9,14 @@ import com.flight.qrpinger.service.qrgen.QRService;
 import com.flight.qrpinger.service.sms.TextService;
 import com.google.zxing.WriterException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 
 @RestController
@@ -35,11 +41,11 @@ public class UserController {
     public ResponseEntity newUser(@RequestBody User user) {
         ResponseEntity response = ResponseEntity.ok(userRepository.save(user));
         try {
-            QRCode qrCode = qrService.generate(user.getId(), user.getLastName());
+            QRCode qrCode = qrService.generate(user.getId());
             userRepository.getReferenceById(user.getId()).setQrHash(qrCode.hashCode());
-            emailService.sendEmail(user.getEmail(), "QRPinger - Your QR Code", "Enjoy!", qrCode);
-        } catch (IOException | WriterException e) {
-            e.printStackTrace();
+            emailService.sendEmail(user.getEmail(), "QRPinger - Your QR Code", "Enjoy!", qrCode.toFile());
+        } catch (WriterException | MessagingException | IOException e) {
+
         }
         return response;
     }
