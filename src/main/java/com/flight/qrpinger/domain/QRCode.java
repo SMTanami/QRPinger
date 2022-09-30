@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -34,4 +35,16 @@ public class QRCode {
         return Files.deleteIfExists(path);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QRCode qrCode = (QRCode) o;
+        return matrix.equals(qrCode.matrix) && userId.equals(qrCode.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(matrix, userId);
+    }
 }

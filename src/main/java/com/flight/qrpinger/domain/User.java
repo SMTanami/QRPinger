@@ -14,25 +14,24 @@ import java.util.Objects;
 @NoArgsConstructor
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    @Column(unique = true)
     private String email;
-    private int qrHash;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id != null && Objects.equals(id, user.id);
+        return phoneNumber.equals(user.phoneNumber) && email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(phoneNumber, email);
     }
 }
