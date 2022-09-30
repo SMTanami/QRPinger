@@ -1,7 +1,6 @@
 package com.flight.qrpinger.domain;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -16,10 +15,17 @@ public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @Column(nullable = false, length = 25)
     private String firstName;
+
+    @Column(nullable = false, length = 25)
     private String lastName;
+
+    @Column(nullable = false, length = 12)
     private String phoneNumber;
-    @Column(unique = true)
+
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
     @Override

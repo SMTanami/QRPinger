@@ -26,6 +26,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendEmail(String to, String subject, String body, File qrCodeFile) throws MessagingException {
         MimeMessage message = createEmailMessage(to, subject, body, qrCodeFile);
         mailSender.send(message);
+        logger.log(Level.INFO, "QR code emailed to " + to);
     }
 
     private MimeMessage createEmailMessage(String to, String subject, String body, File qrFilePath) throws MessagingException {
