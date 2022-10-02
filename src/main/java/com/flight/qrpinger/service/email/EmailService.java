@@ -1,10 +1,11 @@
 package com.flight.qrpinger.service.email;
 
+import com.flight.qrpinger.domain.QRCode;
 import com.flight.qrpinger.domain.User;
 
 import javax.mail.MessagingException;
-import java.io.File;
+import java.io.IOException;
 
 public interface EmailService {
-    void sendEmail(User user, String subject, String body, File qrCodeFile) throws MessagingException;
+    void sendEmail(User user, String subject, String body, QRCode qrCode) throws MessagingException, IOException;
 }

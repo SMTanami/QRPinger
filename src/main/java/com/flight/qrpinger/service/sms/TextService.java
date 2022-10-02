@@ -1,5 +1,7 @@
 package com.flight.qrpinger.service.sms;
 
+import com.flight.qrpinger.domain.User;
+
 public interface TextService {
-    void sendText(String phoneNumber);
+    void sendText(User user);
 }
