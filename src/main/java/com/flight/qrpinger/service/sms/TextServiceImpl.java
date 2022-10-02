@@ -1,5 +1,6 @@
 package com.flight.qrpinger.service.sms;
 
+import com.flight.qrpinger.domain.User;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -20,13 +21,13 @@ public class TextServiceImpl implements TextService {
     }
 
     @Override
-    public void sendText(String to) {
+    public void sendText(User user) {
         Message.creator(
-                        new PhoneNumber(to),
+                        new PhoneNumber(user.getPhoneNumber()),
                         new PhoneNumber(FROM),
                         "You've been pinged!")
                 .create();
 
-        logger.log(Level.INFO, "Successfully pinged " + to);
+        logger.log(Level.INFO, "Successfully pinged " + user);
     }
 }
