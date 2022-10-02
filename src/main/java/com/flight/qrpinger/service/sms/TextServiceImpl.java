@@ -21,7 +21,7 @@ public class TextServiceImpl implements TextService {
 
     @Override
     public void sendText(String to) {
-        Message message = Message.creator(
+        Message.creator(
                         new PhoneNumber(to),
                         new PhoneNumber(FROM),
                         "You've been pinged!")

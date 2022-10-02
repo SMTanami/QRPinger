@@ -1,7 +1,7 @@
 package com.flight.qrpinger.controller;
 
-import com.flight.qrpinger.domain.User;
 import com.flight.qrpinger.domain.QRCode;
+import com.flight.qrpinger.domain.User;
 import com.flight.qrpinger.exceptions.AlreadyAUserException;
 import com.flight.qrpinger.exceptions.UserNotFoundException;
 import com.flight.qrpinger.repository.UserRepository;
@@ -13,12 +13,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -47,15 +42,16 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity newUser(@RequestBody User user) {
         User containedUser = userRepository.findByEmail(user.getEmail());
-        if(containedUser != null) {
+        if (containedUser != null) {
             logger.log(Level.ERROR, "User [" + user + "] already exists. Throwing new AlreadyAUserException...");
             throw new AlreadyAUserException("User with that email already exists");
-        }
-        else {
+        } else {
             ResponseEntity response = ResponseEntity.ok(userRepository.save(user));
             try {
-                QRCode qrCode = qrService.generate(user.getId());
-                emailService.sendEmail(user.getEmail(), "QRPinger - Your QR Code", "Enjoy!", qrCode.toFile());
+                QRCode qrCode = qrService.generate(user);
+                emailService.sendEmail(user, "QRPinger - Your QR Code", "Enjoy!", qrCode.toFile());
+                if (!qrCode.deleteFile()) logger.log(Level.WARN, "Filed to delete file at path: " + qrCode.getPath());
+                else logger.log(Level.INFO, "Successfully deleted QR file at path: " + qrCode.getPath());
             } catch (WriterException | MessagingException | IOException e) {
                 //TODO - Handle these errors
             }
@@ -66,7 +62,7 @@ public class UserController {
     @GetMapping("/{id}")
     ResponseEntity pingUser(@PathVariable Long id) {
         Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             logger.log(Level.ERROR, "No user with id equal to [" + id + "] Throwing UserNotFoundException...");
             throw new UserNotFoundException("No user with that id exists...");
         }

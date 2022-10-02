@@ -2,7 +2,6 @@ package com.flight.qrpinger.domain;
 
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,13 +16,13 @@ import java.util.Objects;
 public class QRCode {
 
     private final BitMatrix matrix;
-    private final Long userId;
+    private final User user;
     private final Path path;
 
-    public QRCode(BitMatrix matrix, Long userId) {
+    public QRCode(BitMatrix matrix, User user) {
         this.matrix = matrix;
-        this.userId = userId;
-        this.path = Path.of(System.getenv("QR_PATH") + "\\" + userId);
+        this.user = user;
+        this.path = Path.of(System.getProperty("java.io.tmpdir") + "\\" + user.getId());
     }
 
     public File toFile() throws IOException {
@@ -40,11 +39,11 @@ public class QRCode {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         QRCode qrCode = (QRCode) o;
-        return matrix.equals(qrCode.matrix) && userId.equals(qrCode.userId);
+        return matrix.equals(qrCode.matrix) && user.equals(qrCode.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(matrix, userId);
+        return Objects.hash(matrix, user);
     }
 }
