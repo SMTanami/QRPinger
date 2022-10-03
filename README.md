@@ -13,3 +13,20 @@ An application that allows a pinger to scan a QR code and a user to receive a no
 3. Spring / Spring Boot - API Development
 4. Twilio - SMS notifications
 5. Gradle - Build automation / Dependency handler
+
+## Howto
+
+### Create a user
+```bash
+curl -X POST http://localhost:8080/user/signup \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"Zaphond","lastName":"Beeblebrox", 
+        "email":"zaphod.b@mail.fictional.bogus", 
+        "phoneNumber":"5555551212"}' 
+```
+  
+### Ping a User
+```bash
+curl -X GET http://localhost:8080/user/8 \
+  -H "Content-Type: application/json"
+```

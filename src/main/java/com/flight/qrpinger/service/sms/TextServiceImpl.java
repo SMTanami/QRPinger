@@ -17,7 +17,7 @@ public class TextServiceImpl implements TextService {
     private TextStrategy strategy;
 
     @Value("${sms.strategy}")
-    private String valueFromPropertyFile;
+    private String strategyNameFromConfig;
 
     @Autowired
     public TextServiceImpl() {
@@ -26,7 +26,7 @@ public class TextServiceImpl implements TextService {
     @Override
     public void sendText(User user) {
         if (strategy==null) {
-            strategyFactory.findStrategy(StrategyName.StrategyNone);
+            this.strategy = strategyFactory.findStrategy(strategyNameFromConfig);
         }
 
         this.strategy.sendText(user);

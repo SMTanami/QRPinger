@@ -7,6 +7,7 @@ import com.flight.qrpinger.service.qrgen.QRService;
 import com.flight.qrpinger.service.sms.TextService;
 import com.flight.qrpinger.service.user.UserService;
 import com.google.zxing.WriterException;
+import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import java.io.IOException;
 
+@Log
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -42,6 +44,7 @@ public class UserController {
             emailService.sendEmail(user, "QRPinger - Your QR Code", "Enjoy!", qrCode);
         } catch (WriterException | IOException | MessagingException e) {
             //TODO - Handle these errors
+            log.severe("newUser Exception "+e.toString());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }

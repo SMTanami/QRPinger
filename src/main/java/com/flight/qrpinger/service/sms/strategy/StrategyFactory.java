@@ -17,11 +17,11 @@ public class StrategyFactory {
     }
 
     public void createStrategy(Set<TextStrategy> strategySet) {
-        strategies = new HashMap<StrategyName,TextStrategy>();
-        strategySet.forEach(strategy -> strategies.put(strategy.getStrategyName(),strategy));
+        this.strategies = new HashMap<StrategyName,TextStrategy>();
+        strategySet.forEach(strategy -> this.strategies.put(strategy.getStrategyName(),strategy));
     }
 
-    public TextStrategy findStrategy(StrategyName strategyName) {
+    public TextStrategy findStrategy(String strategyName) {
         return strategies.get(strategyName);
     }
 
