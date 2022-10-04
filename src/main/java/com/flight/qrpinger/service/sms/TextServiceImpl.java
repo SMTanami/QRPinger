@@ -12,21 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class TextServiceImpl implements TextService {
     @Autowired
-    private StrategyFactory strategyFactory;
+    private TextStrategyFactory strategyFactory;
 
     private TextStrategy strategy;
 
-    @Value("${sms.strategy}")
-    private String strategyNameFromConfig;
+    @Value("${text.strategy}")
+    private String textStrategyConfigVal;
 
-    @Autowired
     public TextServiceImpl() {
+        log.info("TextServiceImpl()");
     }
 
     @Override
     public void sendText(User user) {
         if (strategy==null) {
-            this.strategy = strategyFactory.findStrategy(strategyNameFromConfig);
+            this.strategy = strategyFactory.findStrategy(textStrategyConfigVal);
         }
 
         this.strategy.sendText(user);
