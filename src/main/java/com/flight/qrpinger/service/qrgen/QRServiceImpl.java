@@ -27,7 +27,7 @@ public class QRServiceImpl implements QRService {
 
     @Override
     public QRCode generate(User user) throws WriterException {
-        BitMatrix matrix = writer.encode(QR_DATA + user.toString(), BarcodeFormat.QR_CODE, 500, 500);
+        BitMatrix matrix = writer.encode(QR_DATA + user.getId(), BarcodeFormat.QR_CODE, 300, 300);
         logger.log(Level.INFO, "QR Code successfully generated for user " + user);
         return new QRCode(matrix, user);
     }
