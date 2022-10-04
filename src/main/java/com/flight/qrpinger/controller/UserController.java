@@ -2,14 +2,13 @@ package com.flight.qrpinger.controller;
 
 import com.flight.qrpinger.domain.QRCode;
 import com.flight.qrpinger.domain.User;
+import com.flight.qrpinger.exceptions.AlreadyAUserException;
 import com.flight.qrpinger.service.email.EmailService;
 import com.flight.qrpinger.service.qrgen.QRService;
 import com.flight.qrpinger.service.sms.TextService;
 import com.flight.qrpinger.service.user.UserService;
 import com.google.zxing.WriterException;
 import lombok.extern.java.Log;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,15 +37,22 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity newUser(@RequestBody User user) {
-        User savedUser = userService.saveUser(user);
+
         try {
+            User savedUser = userService.saveUser(user);
             QRCode qrCode = qrService.generate(user);
             emailService.sendEmail(user, "QRPinger - Your QR Code", "Enjoy!", qrCode);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (WriterException | IOException | MessagingException e) {
-            //TODO - Handle these errors
             log.severe("newUser Exception "+e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        } catch (AlreadyAUserException e) {
+            log.warning("User already exists. " + user);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict saving: " + user);
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something bad happened. "+e.toString());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @GetMapping("/{id}")
