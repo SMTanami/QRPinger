@@ -27,11 +27,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmail(User user, String subject, String body, QRCode qrCode) throws IOException, FailedToEmailException {
+    public void sendEmail(User toUser, String subject, String body, QRCode qrCode) throws IOException, FailedToEmailException {
         try {
-            MimeMessage message = createEmailMessage(user, subject, body, qrCode.toFile());
+            MimeMessage message = createEmailMessage(toUser, subject, body, qrCode.toFile());
             mailSender.send(message);
-            logger.log(Level.INFO, "QR code emailed to " + user.getEmail());
+            logger.log(Level.INFO, "QR code emailed to " + toUser.getEmail());
             if (!qrCode.deleteFile()) logger.log(Level.WARN, "Filed to delete file at path: " + qrCode.getPath());
             else logger.log(Level.INFO, "Successfully deleted QR file at path: " + qrCode.getPath());
         } catch (MessagingException e) {

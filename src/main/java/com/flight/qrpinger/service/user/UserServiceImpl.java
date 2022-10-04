@@ -35,9 +35,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             logger.log(Level.ERROR, "No user with id [" + id + "] Throwing UserNotFoundException...");
-            throw new UserNotFoundException("No user with that id exists...");
+            throw new UserNotFoundException("No user with that id exists");
         }
 
         return userOptional.get();

@@ -7,5 +7,5 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 
 public interface EmailService {
-    void sendEmail(User user, String subject, String body, QRCode qrCode) throws MessagingException, IOException;
+    void sendEmail(User toUser, String subject, String body, QRCode qrCode) throws MessagingException, IOException;
 }
