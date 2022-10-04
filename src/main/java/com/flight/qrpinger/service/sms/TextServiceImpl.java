@@ -25,9 +25,8 @@ public class TextServiceImpl implements TextService {
 
     @Override
     public void sendText(User user) {
-        if (strategy==null) {
+        if (strategy==null)
             this.strategy = strategyFactory.findStrategy(textStrategyConfigVal);
-        }
 
         this.strategy.sendText(user);
         log.info("Successfully pinged " + user);
