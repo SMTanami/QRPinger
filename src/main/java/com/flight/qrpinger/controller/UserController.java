@@ -2,11 +2,13 @@ package com.flight.qrpinger.controller;
 
 import com.flight.qrpinger.domain.QRCode;
 import com.flight.qrpinger.domain.User;
+import com.flight.qrpinger.exceptions.AlreadyAUserException;
 import com.flight.qrpinger.service.email.EmailService;
 import com.flight.qrpinger.service.qrgen.QRService;
 import com.flight.qrpinger.service.sms.TextService;
 import com.flight.qrpinger.service.user.UserService;
 import com.google.zxing.WriterException;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import java.io.IOException;
 
+@Log
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -34,38 +37,29 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity newUser(@RequestBody User user) {
-        return saveAndRespond(user);
-    }
 
-    @PostMapping("/signup/")
-    public ResponseEntity newUserParams(@RequestParam(value = "firstName") String firstName,
-                                        @RequestParam(value = "lastName") String lastName,
-                                        @RequestParam(value = "phone") String phoneNumber,
-                                        @RequestParam(value = "email") String email) {
-        return saveAndRespond(User.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .phoneNumber(phoneNumber)
-                .email(email).build());
+        try {
+            User savedUser = userService.saveUser(user);
+            QRCode qrCode = qrService.generate(user);
+            emailService.sendEmail(user, "QRPinger - Your QR Code", "Enjoy!", qrCode);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        } catch (WriterException | IOException | MessagingException e) {
+            log.severe("newUser Exception "+e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        } catch (AlreadyAUserException e) {
+            log.warning("User already exists. " + user);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict saving: " + user);
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something bad happened. "+e.toString());
+        }
     }
 
     @GetMapping("/{id}")
     ResponseEntity pingUser(@PathVariable Long id) {
         User user = userService.getUser(id);
         textService.sendText(user);
-
         return ResponseEntity.ok(user);
-    }
-
-    private ResponseEntity saveAndRespond(User user) {
-        User savedUser = userService.saveUser(user);
-        try {
-            QRCode qrCode = qrService.generate(user);
-            emailService.sendEmail(user,"QRPinger - Your QR Code", "Enjoy!", qrCode);
-        } catch (WriterException | IOException | MessagingException e) {
-            //TODO - Handle these errors
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
 }

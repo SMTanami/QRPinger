@@ -1,33 +1,34 @@
 package com.flight.qrpinger.service.sms;
 
 import com.flight.qrpinger.domain.User;
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.flight.qrpinger.service.sms.strategy.*;
+import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+
+@Log
 @Service
 public class TextServiceImpl implements TextService {
+    @Autowired
+    private TextStrategyFactory strategyFactory;
 
-    private static final String FROM = System.getenv("FROM_NUM");
-    private final Logger logger;
+    private TextStrategy strategy;
+
+    @Value("${text.strategy}")
+    private String textStrategyConfigVal;
 
     public TextServiceImpl() {
-        this.logger = LogManager.getLogger(TextServiceImpl.class);
-        Twilio.init(System.getenv("TWILIO_SID"), System.getenv("TWILIO_TOKEN"));
+        log.info("TextServiceImpl()");
     }
 
     @Override
     public void sendText(User user) {
-        Message.creator(
-                        new PhoneNumber(user.getPhoneNumber()),
-                        new PhoneNumber(FROM),
-                        "You've been pinged!")
-                .create();
+        if (strategy==null)
+            this.strategy = strategyFactory.findStrategy(textStrategyConfigVal);
 
-        logger.log(Level.INFO, "Successfully pinged " + user);
+        this.strategy.sendText(user);
+        log.info("Successfully pinged " + user);
     }
 }
