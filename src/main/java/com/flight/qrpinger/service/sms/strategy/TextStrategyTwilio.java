@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @Log
 @Component("TextStrategyTwilio")
 public class TextStrategyTwilio implements TextStrategy {
-    private static final String FROM = System.getenv("FROM_NUM");
+    @Value("${text.strategy.twilio.from_number}")
+    private String FROM_NUMBER;
     private boolean initialized;
 
     @Value("${text.strategy.twilio.sid}")
@@ -39,7 +40,7 @@ public class TextStrategyTwilio implements TextStrategy {
             init();
         Message.creator(
                         new PhoneNumber(user.getPhoneNumber()),
-                        new PhoneNumber(FROM),
+                        new PhoneNumber(FROM_NUMBER),
                         "You've been pinged!")
                 .create();
     }

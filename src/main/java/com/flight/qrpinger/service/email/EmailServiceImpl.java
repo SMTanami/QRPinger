@@ -3,9 +3,7 @@ package com.flight.qrpinger.service.email;
 import com.flight.qrpinger.domain.QRCode;
 import com.flight.qrpinger.domain.User;
 import com.flight.qrpinger.exceptions.FailedToEmailException;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.java.Log;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -16,14 +14,13 @@ import java.io.File;
 import java.io.IOException;
 
 @Service
+@Log
 public class EmailServiceImpl implements EmailService {
 
-    private final Logger logger;
     private final JavaMailSender mailSender;
 
     public EmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
-        this.logger = LogManager.getLogger(EmailServiceImpl.class);
     }
 
     @Override
@@ -31,9 +28,9 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = createEmailMessage(toUser, subject, body, qrCode.toFile());
             mailSender.send(message);
-            logger.log(Level.INFO, "QR code emailed to " + toUser.getEmail());
-            if (!qrCode.deleteFile()) logger.log(Level.WARN, "Filed to delete file at path: " + qrCode.getPath());
-            else logger.log(Level.INFO, "Successfully deleted QR file at path: " + qrCode.getPath());
+            log.info("QR code emailed to " + toUser.getEmail());
+            if (!qrCode.deleteFile()) log.warning("Filed to delete file at path: " + qrCode.getPath());
+            else log.info("Successfully deleted QR file at path: " + qrCode.getPath());
         } catch (MessagingException e) {
             throw new FailedToEmailException("Could not email user...");
         }
