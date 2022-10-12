@@ -16,6 +16,12 @@ An application that allows a pinger to scan a QR code and a user to receive a no
 
 ## Howto
 
+### OpenAPI
+[OpenAPI UI - Explore and send requests](http://localhost:8080/swagger-ui.html)
+
+[OpenAPI Spec](http://localhost:8080/v3/api-docs/)
+
+
 ### Create a user
 ```bash
 curl -X POST http://localhost:8080/user/signup \
@@ -27,6 +33,6 @@ curl -X POST http://localhost:8080/user/signup \
   
 ### Ping a User
 ```bash
-curl -X GET http://localhost:8080/user/8 \
-  -H "Content-Type: application/json"
+curl -H "Content-Type: application/json" \
+  -X GET http://localhost:8080/user/{USER_ID} 
 ```
