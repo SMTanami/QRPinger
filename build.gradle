@@ -27,6 +27,11 @@ dependencies {
 	implementation group: "com.twilio.sdk", name: "twilio", version: "9.0.0"
 	implementation 'com.google.zxing:core:3.5.0'
 	implementation 'com.google.zxing:javase:3.5.0'
+
+	// OpenAPI Doc Gen and UI
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.11'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
