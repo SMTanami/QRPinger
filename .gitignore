@@ -37,4 +37,6 @@ out/
 .vscode/
 
 ## Credentials ##
-application.properties
+# application.properties
+
+lib/

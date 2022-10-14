@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {
             log.severe("No user with id [" + id + "] Throwing UserNotFoundException...");
-            throw new UserNotFoundException("No user with that id exists...");
+            throw new UserNotFoundException("No user with that id exists");
         }
 
         return userOptional.get();

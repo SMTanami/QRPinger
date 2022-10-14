@@ -27,10 +27,19 @@ dependencies {
 	implementation group: "com.twilio.sdk", name: "twilio", version: "9.0.0"
 	implementation 'com.google.zxing:core:3.5.0'
 	implementation 'com.google.zxing:javase:3.5.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// Testing. Use JUnit 5 and embedded, in-memory H2 database.
+	testImplementation('org.springframework.boot:spring-boot-starter-test:2.7.4') {
+		exclude group: 'junit', module: 'junit'
+	}
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+
 }
 
 tasks.named('test') {
