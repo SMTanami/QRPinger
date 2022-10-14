@@ -38,3 +38,7 @@ out/
 
 ## Credentials ##
 application.properties
+
+## Mac
+.DS_Store
+lib/
