@@ -22,7 +22,7 @@ public class QRCode {
     public QRCode(BitMatrix matrix, User user) {
         this.matrix = matrix;
         this.user = user;
-        this.path = Path.of(System.getProperty("java.io.tmpdir") + "\\" + user.getId());
+        this.path = Path.of(System.getProperty("java.io.tmpdir") + "/" + user.getId());
     }
 
     public File toFile() throws IOException {
