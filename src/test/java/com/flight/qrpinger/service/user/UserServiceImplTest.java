@@ -52,7 +52,6 @@ class UserServiceImplTest {
     @Test
     void getUserNotFoundExceptionTest() {
         Exception e = assertThrows(UserNotFoundException.class, () -> userService.getUser(-1L));
-        assertEquals("No user with that id exists", e.getMessage());
         Mockito.verify(userRepository).findById(Mockito.any());
     }
 }

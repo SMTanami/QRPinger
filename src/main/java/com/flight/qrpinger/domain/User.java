@@ -1,6 +1,7 @@
 package com.flight.qrpinger.domain;
 
 import lombok.*;
+import lombok.extern.java.Log;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Log
 public class User {
 
     @Id
@@ -42,5 +44,10 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(phoneNumber, email);
+    }
+
+    public boolean validate() {
+        log.warning("validate");
+        return true;
     }
 }

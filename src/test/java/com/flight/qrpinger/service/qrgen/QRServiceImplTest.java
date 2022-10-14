@@ -5,10 +5,10 @@ import com.flight.qrpinger.domain.User;
 import com.google.zxing.WriterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class QRServiceImplTest {
 
@@ -32,7 +32,7 @@ class QRServiceImplTest {
         QRCode actual = qrService.generate(expectedUser);
 
         assertEquals(actual.getUser(), expectedUser);
-        assertEquals(actual.getPath(), expectedPath);
+        assertEquals(actual.getPath().toString(), expectedPath.toString());
         assertNotNull(actual.getMatrix());
     }
 }
